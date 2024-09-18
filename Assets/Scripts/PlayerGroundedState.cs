@@ -22,6 +22,12 @@ public class PlayerGroundedState : PlayerState
     {
         base.Update();
 
+        if (!player.IsGroundedDetected())
+        {
+           stateMachine.ChangeState(player.airState);
+        }
+       
+        //按下空格键并且检测到是地面进入跳跃状态
         if (Input.GetKeyDown(KeyCode.Space) && player.IsGroundedDetected())
         {
             stateMachine.ChangeState(player.jumpState);

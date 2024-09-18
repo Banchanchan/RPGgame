@@ -6,12 +6,14 @@ public class PlayerState
 {
     protected PlayerStateMachine stateMachine;
     protected Player player;
-
+    //刚体
     protected Rigidbody2D rb;
-
+    //x轴输入
     protected float xInput;
-
     private string animBoolName;
+
+    //计时器
+    protected float stateTimer;
 
     public PlayerState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName)
     {
@@ -22,6 +24,7 @@ public class PlayerState
 
     public virtual void Enter()
     {
+        //进入该函数则播放对应动画
         player.anim.SetBool(animBoolName , true);
         rb = player.rb;
         
@@ -29,13 +32,17 @@ public class PlayerState
 
     public virtual void Update()
     {
+        //计时器变化
+        stateTimer -= Time.deltaTime;
+        //通过水平轴得到输入
         xInput = Input.GetAxisRaw("Horizontal");
-
+        //设置跳跃动画的上跳和下落的转换
         player.anim.SetFloat("yVelocity", rb.velocity.y);
     }
 
     public virtual void Exit()
     {
+        //退出则停止播放动画
         player.anim.SetBool(animBoolName, false);
     }
 }

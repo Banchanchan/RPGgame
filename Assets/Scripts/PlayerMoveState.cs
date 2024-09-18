@@ -22,8 +22,9 @@ public class PlayerMoveState : PlayerGroundedState
     public override void Update()
     {
         base.Update();
+        //改变刚体速度实现移动效果
         player.SetVelocity(xInput * player.moveSpeed, rb.velocity.y);
-
+        //x方向变为0表示停下来，进入Idle状态
         if (xInput == 0)
         {
             stateMachine.ChangeState(player.idleState);

@@ -22,6 +22,7 @@ public class PlayerAirState : PlayerState
     {
         base.Update();
 
+        //跳下来检测到地面则播放Idle状态
         if(player.IsGroundedDetected())
         {
             stateMachine.ChangeState(player.idleState);

@@ -21,7 +21,7 @@ public class PlayerIdleState : PlayerGroundedState
     public override void Update()
     {
         base.Update();
-        
+        //x方向不为零则进入移动状态
         if(xInput != 0)
         {
             stateMachine.ChangeState(player.moveState);

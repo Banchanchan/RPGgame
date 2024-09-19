@@ -10,6 +10,7 @@ public class PlayerState
     protected Rigidbody2D rb;
     //x轴输入
     protected float xInput;
+    protected float yInput;
     private string animBoolName;
 
     //计时器
@@ -36,6 +37,7 @@ public class PlayerState
         stateTimer -= Time.deltaTime;
         //通过水平轴得到输入
         xInput = Input.GetAxisRaw("Horizontal");
+        yInput = Input.GetAxisRaw("Vertical");
         //设置跳跃动画的上跳和下落的转换
         player.anim.SetFloat("yVelocity", rb.velocity.y);
     }

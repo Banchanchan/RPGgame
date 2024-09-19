@@ -16,6 +16,8 @@ public class PlayerAirState : PlayerState
     public override void Exit()
     {
         base.Exit();
+        //防止高处跳下时因为惯性继续移动的现象
+        player.SetVelocity(0, rb.velocity.y);
     }
 
     public override void Update()
@@ -26,6 +28,17 @@ public class PlayerAirState : PlayerState
         if(player.IsGroundedDetected())
         {
             stateMachine.ChangeState(player.idleState);
+        }
+        //检测到是墙体播放滑墙动作
+        if(player.IsWallDetected())
+        {
+            stateMachine.ChangeState(player.wallSlide);
+        }
+
+        //贴在墙上时让其x方向速度变小
+        if(xInput != 0)
+        {
+            player.SetVelocity(player.moveSpeed * 0.8f * xInput, rb.velocity.y);
         }
     }
 }

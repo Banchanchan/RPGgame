@@ -41,7 +41,10 @@ public class Player : MonoBehaviour
     public PlayerJumpState jumpState { get; private set; }
     public PlayerAirState airState { get; private set; }
     public PlayerWallSlideState wallSlide { get; private set; }
+    public PlayerWallJumpState wallJump { get; private set; }
     public PlayerDashState dashState { get; private set; }
+
+    public PlayerPrimaryAttack primaryAttack { get; private set; }
 
     #endregion
 
@@ -59,6 +62,8 @@ public class Player : MonoBehaviour
         airState  = new PlayerAirState(this, stateMachine, "Jump");
         dashState = new PlayerDashState(this, stateMachine, "Dash");
         wallSlide = new PlayerWallSlideState(this, stateMachine, "WallSlide");
+        wallJump = new PlayerWallJumpState(this, stateMachine, "Jump");
+        primaryAttack = new PlayerPrimaryAttack(this, stateMachine, "Attack");
     }
 
     private void Start()
@@ -81,6 +86,11 @@ public class Player : MonoBehaviour
     //本来该功能是在PlayerGroundState脚本中的，移动到这里是为了实现跳跃时也能冲刺
     private void CheckDashInput()
     {
+        if(IsWallDetected())
+        {
+            return;
+        }
+
         //冲刺冷却计时器
         dashUsageTimer -= Time.deltaTime;
 
@@ -100,6 +110,8 @@ public class Player : MonoBehaviour
             stateMachine.ChangeState(dashState);
         }
     }
+
+    public void AnimationTrigger() => stateMachine.currentState.AnimationFinishTrigger();
 
     //设置刚体速度的函数
     public void SetVelocity(float _xVelocity, float _yVelocity)

@@ -19,13 +19,17 @@ public class PlayerDashState : PlayerState
     public override void Exit()
     {
         base.Exit();
-        //退出时速度要变为0
-        player.SetVelocity(0, rb.velocity.y);
     }
 
     public override void Update()
     {
         base.Update();
+
+        if(!player.IsGroundedDetected() && player.IsWallDetected())
+        {
+            stateMachine.ChangeState(player.wallSlide);
+        }
+
         //设置冲刺的速度
         player.SetVelocity(player.dashSpeed * player.dashDir, 0);
 

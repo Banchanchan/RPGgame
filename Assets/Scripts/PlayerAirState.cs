@@ -16,8 +16,6 @@ public class PlayerAirState : PlayerState
     public override void Exit()
     {
         base.Exit();
-        //防止高处跳下时因为惯性继续移动的现象
-        player.SetVelocity(0, rb.velocity.y);
     }
 
     public override void Update()

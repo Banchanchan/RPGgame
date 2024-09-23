@@ -16,13 +16,19 @@ public class PlayerWallSlideState : PlayerState
     public override void Exit()
     {
         base.Exit();
-        //防止惯性滑动
-        player.SetVelocity(0,rb.velocity.y);
     }
 
     public override void Update()
     {
         base.Update();
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            stateMachine.ChangeState(player.wallJump);
+            //当执行wallJump时，就不用下面的这些代码了，之间退出，不然会发生冲突，刚体的速度会冲突
+            return;
+        }
+
         //当有输入时（想要离开wallslide状态）并且输入的方向和面朝方向不一致时（向不是墙的方向离开）
         if(xInput != 0 && xInput != player.facingDir)
         {

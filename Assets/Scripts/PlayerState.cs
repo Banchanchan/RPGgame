@@ -15,6 +15,7 @@ public class PlayerState
 
     //计时器
     protected float stateTimer;
+    protected bool triggerCalled;
 
     public PlayerState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName)
     {
@@ -28,7 +29,8 @@ public class PlayerState
         //进入该函数则播放对应动画
         player.anim.SetBool(animBoolName , true);
         rb = player.rb;
-        
+
+        triggerCalled = false;
     }
 
     public virtual void Update()
@@ -46,5 +48,10 @@ public class PlayerState
     {
         //退出则停止播放动画
         player.anim.SetBool(animBoolName, false);
+    }
+
+    public virtual void AnimationFinishTrigger()
+    {
+        triggerCalled = true;
     }
 }

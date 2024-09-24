@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [Header("Attack details")]
+    public Vector2[] attackMovement;
+
+    public bool isBusy {  get; private set; }
+
     [Header("Move info")]
     public float moveSpeed = 8;
     public float jumpForce = 12;
@@ -44,7 +49,7 @@ public class Player : MonoBehaviour
     public PlayerWallJumpState wallJump { get; private set; }
     public PlayerDashState dashState { get; private set; }
 
-    public PlayerPrimaryAttack primaryAttack { get; private set; }
+    public PlayerPrimaryAttackState primaryAttack { get; private set; }
 
     #endregion
 
@@ -63,7 +68,7 @@ public class Player : MonoBehaviour
         dashState = new PlayerDashState(this, stateMachine, "Dash");
         wallSlide = new PlayerWallSlideState(this, stateMachine, "WallSlide");
         wallJump = new PlayerWallJumpState(this, stateMachine, "Jump");
-        primaryAttack = new PlayerPrimaryAttack(this, stateMachine, "Attack");
+        primaryAttack = new PlayerPrimaryAttackState(this, stateMachine, "Attack");
     }
 
     private void Start()
@@ -81,6 +86,17 @@ public class Player : MonoBehaviour
         stateMachine.currentState.Update();
         CheckDashInput();
 
+    }
+
+    //协程概念，是一个协程（Coroutine），它的作用是让一个对象在指定的时间内处于“忙碌”状态。
+    public IEnumerator BusyFor(float _seconds)
+    {
+        isBusy = true;
+
+        //等到_seconds秒后，赋值为false
+        yield return new WaitForSeconds(_seconds);
+
+        isBusy = false;
     }
 
     //本来该功能是在PlayerGroundState脚本中的，移动到这里是为了实现跳跃时也能冲刺
@@ -111,8 +127,8 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void AnimationTrigger() => stateMachine.currentState.AnimationFinishTrigger();
-
+    public void ZeroVelocity() => rb.velocity = new Vector2(0, 0);
+    #region Velocity
     //设置刚体速度的函数
     public void SetVelocity(float _xVelocity, float _yVelocity)
     {
@@ -120,6 +136,9 @@ public class Player : MonoBehaviour
         //改变面朝向的函数
         FlipController(_xVelocity);
     }
+    #endregion
+    #region Collision
+    public void AnimationTrigger() => stateMachine.currentState.AnimationFinishTrigger();
 
     //检测是否为地面的函数
     public bool IsGroundedDetected() => Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
@@ -132,7 +151,9 @@ public class Player : MonoBehaviour
         Gizmos.DrawLine(groundCheck.position, new Vector2(groundCheck.position.x, groundCheck.position.y - groundCheckDistance));
         Gizmos.DrawLine(wallCheck.position, new Vector2(wallCheck.position.x + wallCheckDistance, wallCheck.position.y));
     }
+    #endregion
 
+    #region Flip
     //翻转函数
     public void Flip()
     {
@@ -154,4 +175,5 @@ public class Player : MonoBehaviour
             Flip();
         }
     }
+    #endregion
 }

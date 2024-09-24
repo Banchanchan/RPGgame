@@ -12,7 +12,7 @@ public class PlayerIdleState : PlayerGroundedState
     {
         base.Enter();
 
-        rb.velocity = new Vector2(0,0);
+        player.ZeroVelocity();
     }
 
     public override void Exit()
@@ -23,8 +23,8 @@ public class PlayerIdleState : PlayerGroundedState
     public override void Update()
     {
         base.Update();
-        //x方向不为零则进入移动状态
-        if(xInput != 0)
+        //x方向不为零,并且不忙的时候进入移动状态
+        if (xInput != 0 && !player.isBusy)
         {
             stateMachine.ChangeState(player.moveState);
         }

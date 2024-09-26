@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : Entity
 {
     [Header("Attack details")]
     public Vector2[] attackMovement;
@@ -21,23 +21,6 @@ public class Player : MonoBehaviour
     public float dashDuration = 0.2f;
     public float dashDir { get; private set; }
 
-    [Header("Collision Info")]
-    [SerializeField]
-    private Transform groundCheck;
-    [SerializeField]
-    private float groundCheckDistance;
-    [SerializeField]
-    private LayerMask whatIsGround;
-    [SerializeField]
-    private Transform wallCheck;
-    [SerializeField]
-    private float wallCheckDistance;
-
-    #region Components
-    public Animator anim {  get; private set; }
-    public Rigidbody2D rb { get; private set; }
-
-    #endregion
     #region States
     public PlayerStateMachine stateMachine {  get; private set; }
 
@@ -53,12 +36,10 @@ public class Player : MonoBehaviour
 
     #endregion
 
-    public int facingDir { get; private set; } = 1;
-    private bool facingRight = true;
-
-
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         stateMachine = new PlayerStateMachine();
 
         idleState = new PlayerIdleState(this, stateMachine, "Idle");
@@ -71,21 +52,21 @@ public class Player : MonoBehaviour
         primaryAttack = new PlayerPrimaryAttackState(this, stateMachine, "Attack");
     }
 
-    private void Start()
+    protected override void Start()
     {
-        //获取组件
-        anim = GetComponentInChildren<Animator>();
-        rb = GetComponent<Rigidbody2D>();
+        base.Start();
+
         //初始化状态
         stateMachine.Initialize(idleState);
     }
 
-    private void Update()
+    protected override void Update()
     {
+        base.Update();
+
         //改变状态
         stateMachine.currentState.Update();
         CheckDashInput();
-
     }
 
     //协程概念，是一个协程（Coroutine），它的作用是让一个对象在指定的时间内处于“忙碌”状态。
@@ -127,53 +108,5 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void ZeroVelocity() => rb.velocity = new Vector2(0, 0);
-    #region Velocity
-    //设置刚体速度的函数
-    public void SetVelocity(float _xVelocity, float _yVelocity)
-    {
-        rb.velocity = new Vector2(_xVelocity, _yVelocity);
-        //改变面朝向的函数
-        FlipController(_xVelocity);
-    }
-    #endregion
-    #region Collision
     public void AnimationTrigger() => stateMachine.currentState.AnimationFinishTrigger();
-
-    //检测是否为地面的函数
-    public bool IsGroundedDetected() => Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
-
-    public bool IsWallDetected() => Physics2D.Raycast(wallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
-
-    //绘制辅助线的函数
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawLine(groundCheck.position, new Vector2(groundCheck.position.x, groundCheck.position.y - groundCheckDistance));
-        Gizmos.DrawLine(wallCheck.position, new Vector2(wallCheck.position.x + wallCheckDistance, wallCheck.position.y));
-    }
-    #endregion
-
-    #region Flip
-    //翻转函数
-    public void Flip()
-    {
-        facingDir *= -1;
-        facingRight = !facingRight;
-        //翻转朝向
-        transform.Rotate(0, 180, 0);
-    }
-
-    //控制翻转的函数
-    public void FlipController(float _x)
-    {
-        if(_x > 0 && !facingRight)
-        {
-            Flip();
-        }
-        else if(_x < 0 && facingRight)
-        {
-            Flip();
-        }
-    }
-    #endregion
 }

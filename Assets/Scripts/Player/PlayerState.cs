@@ -15,6 +15,7 @@ public class PlayerState
 
     //计时器
     protected float stateTimer;
+    //动画退出的控制条件
     protected bool triggerCalled;
 
     public PlayerState(Player _player, PlayerStateMachine _stateMachine, string _animBoolName)
@@ -30,6 +31,7 @@ public class PlayerState
         player.anim.SetBool(animBoolName , true);
         rb = player.rb;
 
+        //初始为false，表示动画不用退出
         triggerCalled = false;
     }
 
@@ -52,6 +54,7 @@ public class PlayerState
 
     public virtual void AnimationFinishTrigger()
     {
+        //一个动画状态播放完之后就可以退出了
         triggerCalled = true;
     }
 }

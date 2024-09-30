@@ -108,5 +108,5 @@ public class Player : Entity
         }
     }
 
-    public void AnimationTrigger() => stateMachine.currentState.AnimationFinishTrigger();
+    public virtual void AnimationTrigger() => stateMachine.currentState.AnimationFinishTrigger();
 }

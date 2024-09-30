@@ -66,7 +66,7 @@ public class PlayerPrimaryAttackState : PlayerState
         //如此，在攻击时，进入这个Update时，刚体速度为0，就不会产生滑步的效果，不攻击则没有影响（都不会进入这个类）
         if (stateTimer < 0)
         {
-            player.ZeroVelocity();
+            player.SetZeroVelocity();
         }
 
         if(triggerCalled)

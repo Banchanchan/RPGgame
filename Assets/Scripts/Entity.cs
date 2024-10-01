@@ -10,6 +10,13 @@ public class Entity : MonoBehaviour
     public EntityFX fx { get; private set; }
     #endregion
 
+    [Header("Knockback info")]
+    [SerializeField]
+    protected Vector2 knockbackDirection;
+    [SerializeField]
+    protected float knockbackDuration;
+    protected bool isKnoecked;
+
     [Header("Collision Info")]
     public Transform attackCheck;
     public float attackCheckRadius;
@@ -48,7 +55,17 @@ public class Entity : MonoBehaviour
     public virtual void Damage()
     {
         fx.StartCoroutine("FlashFX");
+        StartCoroutine("HitKnockback");
         Debug.Log(gameObject.name + " was damaged!");
+    }
+
+    protected virtual IEnumerator HitKnockback()
+    {
+        isKnoecked = true;
+        rb.velocity = new Vector2(knockbackDirection.x * -facingDir, knockbackDirection.y);
+
+        yield return new WaitForSeconds(knockbackDuration);
+        isKnoecked = false;
     }
 
    /* public virtual void AttackTrigger()
@@ -83,10 +100,20 @@ public class Entity : MonoBehaviour
     #endregion
 
     #region Velocity
-    public virtual void SetZeroVelocity() => rb.velocity = new Vector2(0, 0);
+    public virtual void SetZeroVelocity()
+    {
+        //isKnocked为真表示Player对象或者Enemy对象正在被击退，不用执行设置刚体速度的代码
+        if (isKnoecked)
+            return;
+        rb.velocity = new Vector2(0, 0);
+    }
     //设置刚体速度的函数
     public virtual void SetVelocity(float _xVelocity, float _yVelocity)
     {
+        //isKnocked为真表示Enemy对象正在被击退，不用执行设置刚体速度等相关代码
+        //isKnocked开始为false，只有当被攻击时执行Damage函数才会有knockbackDuration的时间内赋值为true
+        if (isKnoecked)
+            return;
         rb.velocity = new Vector2(_xVelocity, _yVelocity);
         //改变面朝向的函数
         FlipController(_xVelocity);

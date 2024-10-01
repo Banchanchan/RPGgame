@@ -7,9 +7,9 @@ public class SkeletoBattleState : EnemyState
     private Transform player;
     private Enemy_Skeleton enemy;
     private int moveDir;
-    public SkeletoBattleState(Enemy _enemyBase, EnemyStateMachine _stateMachine, string _animName, Enemy_Skeleton enemy) : base(_enemyBase, _stateMachine, _animName)
+    public SkeletoBattleState(Enemy _enemyBase, EnemyStateMachine _stateMachine, string _animName, Enemy_Skeleton _enemy) : base(_enemyBase, _stateMachine, _animName)
     {
-        this.enemy = enemy;
+        this.enemy = _enemy;
     }
 
     public override void Enter()
@@ -45,18 +45,21 @@ public class SkeletoBattleState : EnemyState
             {
                 stateMachine.ChangeState(enemy.idleState);
             }
+
+            //设置速度的代码如果放在else外面就会是攻击一下移动一下的现象，而不是攻击是站着不动攻击
+            if (player.position.x > enemy.transform.position.x)
+            {
+                moveDir = 1;
+            }
+            else if (player.position.x < enemy.transform.position.x)
+            {
+                moveDir = -1;
+            }
+
+            enemy.SetVelocity(enemy.moveSpeed * moveDir, enemy.rb.velocity.y);
         }
 
-        if(player.position.x > enemy.transform.position.x)
-        {
-            moveDir = 1;
-        }
-        else if(player.position.x < enemy.transform.position.x)
-        {
-            moveDir = -1;
-        }
-
-        enemy.SetVelocity(enemy.moveSpeed * moveDir, enemy.rb.velocity.y);
+        
     }
 
     private bool CanAttack()

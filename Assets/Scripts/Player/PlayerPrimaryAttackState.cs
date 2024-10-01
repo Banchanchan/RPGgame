@@ -18,6 +18,8 @@ public class PlayerPrimaryAttackState : PlayerState
     public override void Enter()
     {
         base.Enter();
+        //先清理一下，防止其他地方会有冲突，当然目前没有发现错误，课程上有错误
+        xInput = 0;
         //当大于2时重置，或者当时间比较长时重置（因为当最后一次攻击时间固定时，Time.time还在变大，而当其大于lastTimeAttacked + comboWindow表示间隔时间比较长了）
         if (comboCounter > 2 || Time.time >= lastTimeAttacked + comboWindow)
         {

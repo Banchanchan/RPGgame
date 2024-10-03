@@ -15,12 +15,14 @@ public class Player : Entity
     public float jumpForce = 12;
 
     [Header("Dash info")]
-    [SerializeField]
+    /*[SerializeField]
     private float dashCooldown;
-    private float dashUsageTimer;
+    private float dashUsageTimer;*/
     public float dashSpeed = 25;
     public float dashDuration = 0.2f;
     public float dashDir { get; private set; }
+
+    public SkillManger skill {  get; private set; }
 
     #region States
     public PlayerStateMachine stateMachine {  get; private set; }
@@ -60,6 +62,8 @@ public class Player : Entity
     {
         base.Start();
 
+        skill = SkillManger.instance;
+
         //初始化状态
         stateMachine.Initialize(idleState);
     }
@@ -93,13 +97,15 @@ public class Player : Entity
         }
 
         //冲刺冷却计时器
-        dashUsageTimer -= Time.deltaTime;
+        //dashUsageTimer -= Time.deltaTime;
 
         //按下左Shift进入冲刺状态
-        if (Input.GetKeyDown(KeyCode.LeftShift) && dashUsageTimer < 0)
+        //if (Input.GetKeyDown(KeyCode.LeftShift) && dashUsageTimer < 0)
+        if(Input.GetKeyDown(KeyCode.LeftShift) && SkillManger.instance.dash.CanUseSkill())
         {
             //冲刺冷却时间
-            dashUsageTimer = dashCooldown;
+            //dashUsageTimer = dashCooldown;
+
             //加个dashDir是为了解决当在攻击时，不用打断攻击也能向反方向冲刺
             dashDir = Input.GetAxisRaw("Horizontal");
             //如果为零则将面朝向赋值给冲刺朝向

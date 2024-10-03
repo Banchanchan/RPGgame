@@ -14,7 +14,9 @@ public class SkeletonGroundedState : EnemyState
     public override void Enter()
     {
         base.Enter();
-        player = GameObject.Find("Player").transform;
+        //player = GameObject.Find("Player").transform;
+        //不使用GameObject.Find()可以节省搜索时的开销
+        player = PlayerManager.instance.player.transform;
     }
 
     public override void Exit()

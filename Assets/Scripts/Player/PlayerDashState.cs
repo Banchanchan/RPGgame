@@ -12,6 +12,9 @@ public class PlayerDashState : PlayerState
     {
         base.Enter();
 
+        //调用创建实例的函数
+        player.skill.clone.CreateClone(player.transform);
+
         //将持续时间赋值给计时器
         stateTimer = player.dashDuration;
     }

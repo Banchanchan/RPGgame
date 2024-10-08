@@ -5,13 +5,10 @@ using UnityEngine;
 public class Clone_Skill : Skill
 {
     [Header("Clone info")]
-    [SerializeField]
-    private GameObject clonePrefab;
-    [SerializeField]
-    private float cloneDuration;
+    [SerializeField] private GameObject clonePrefab;
+    [SerializeField] private float cloneDuration;
     [Space]
-    [SerializeField]
-    private bool canAttack;
+    [SerializeField] private bool canAttack;
 
     public void CreateClone(Transform _clonePosition)
     {

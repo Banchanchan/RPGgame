@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class Enemy : Entity
 {
-    [SerializeField]
-    protected LayerMask whatIsPlayer;
+    [SerializeField] protected LayerMask whatIsPlayer;
 
     [Header("Stunned info")]
     public float stunnedDuration;
     public Vector2 stunnedDirection;
     protected bool canBeStunned;
-    [SerializeField]
-    protected GameObject counterImage;
+    [SerializeField] protected GameObject counterImage;
     
 
     [Header("Move info")]

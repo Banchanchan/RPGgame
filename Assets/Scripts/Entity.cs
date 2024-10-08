@@ -11,25 +11,18 @@ public class Entity : MonoBehaviour
     #endregion
 
     [Header("Knockback info")]
-    [SerializeField]
-    protected Vector2 knockbackDirection;
-    [SerializeField]
-    protected float knockbackDuration;
+    [SerializeField] protected Vector2 knockbackDirection;
+    [SerializeField] protected float knockbackDuration;
     protected bool isKnoecked;
 
     [Header("Collision Info")]
     public Transform attackCheck;
     public float attackCheckRadius;
-    [SerializeField]
-    protected Transform groundCheck;
-    [SerializeField]
-    protected float groundCheckDistance;
-    [SerializeField]
-    protected LayerMask whatIsGround;
-    [SerializeField]
-    protected Transform wallCheck;
-    [SerializeField]
-    protected float wallCheckDistance;
+    [SerializeField] protected Transform groundCheck;
+    [SerializeField] protected float groundCheckDistance;
+    [SerializeField] protected LayerMask whatIsGround;
+    [SerializeField] protected Transform wallCheck;
+    [SerializeField] protected float wallCheckDistance;
 
     public int facingDir { get; private set; } = 1;
     private bool facingRight = true;

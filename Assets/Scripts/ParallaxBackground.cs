@@ -8,8 +8,7 @@ public class ParallaxBackground : MonoBehaviour
     //声明一个摄像机游戏对象
     private GameObject cam;
 
-    [SerializeField]
-    private float parallaxEffect;
+    [SerializeField] private float parallaxEffect;              //视差影响大小
 
     private float xPosition;
     private float length;

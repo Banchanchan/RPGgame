@@ -23,6 +23,7 @@ public class Player : Entity
     public float dashDir { get; private set; }
 
     public SkillManger skill {  get; private set; }
+    public GameObject sword;
 
     #region States
     public PlayerStateMachine stateMachine {  get; private set; }
@@ -37,6 +38,9 @@ public class Player : Entity
 
     public PlayerPrimaryAttackState primaryAttack { get; private set; }
     public PlayerCounterAttackState counterAttackState { get; private set; }
+
+    public PlayerAimSwordState aimSword {  get; private set; }
+    public PlayerCatchSwordState catchSword { get; private set; }
 
     #endregion
 
@@ -56,6 +60,9 @@ public class Player : Entity
 
         primaryAttack = new PlayerPrimaryAttackState(this, stateMachine, "Attack");
         counterAttackState = new PlayerCounterAttackState(this, stateMachine, "CounterAttack");
+
+        aimSword = new PlayerAimSwordState(this, stateMachine, "AimSword");
+        catchSword = new PlayerCatchSwordState(this, stateMachine, "CatchSword");
     }
 
     protected override void Start()
@@ -75,6 +82,18 @@ public class Player : Entity
         //改变状态
         stateMachine.currentState.Update();
         CheckDashInput();
+    }
+
+    //设置唯一短剑对象
+    public void AssignNewSword(GameObject _newSword)
+    {
+        sword = _newSword;
+    }
+
+    //销毁短剑对象
+    public void ClearTheSword()
+    {
+        Destroy(sword);
     }
 
     //协程概念，是一个协程（Coroutine），它的作用是让一个对象在指定的时间内处于“忙碌”状态。

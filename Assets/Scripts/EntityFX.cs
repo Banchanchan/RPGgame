@@ -7,11 +7,9 @@ public class EntityFX : MonoBehaviour
     private SpriteRenderer sr;
 
     [Header("Flash FX")]
-    [SerializeField]
-    private float flashDuration;
-    [SerializeField]
-    private Material hitMat;
-    private Material originalMat;
+    [SerializeField] private float flashDuration;               //持续时间
+    [SerializeField] private Material hitMat;                   //受击材质
+    private Material originalMat;                               //原始材质
 
     private void Start()
     {

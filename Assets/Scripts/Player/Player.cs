@@ -13,6 +13,7 @@ public class Player : Entity
     [Header("Move info")]
     public float moveSpeed = 8;
     public float jumpForce = 12;
+    public float swordReturnImpact = 7;
 
     [Header("Dash info")]
     /*[SerializeField]
@@ -23,7 +24,7 @@ public class Player : Entity
     public float dashDir { get; private set; }
 
     public SkillManger skill {  get; private set; }
-    public GameObject sword;
+    public GameObject sword { get; private set; }
 
     #region States
     public PlayerStateMachine stateMachine {  get; private set; }
@@ -91,8 +92,10 @@ public class Player : Entity
     }
 
     //销毁短剑对象
-    public void ClearTheSword()
+    public void CatchTheSword()
     {
+        //切换到回收短剑状态
+        stateMachine.ChangeState(catchSword);
         Destroy(sword);
     }
 

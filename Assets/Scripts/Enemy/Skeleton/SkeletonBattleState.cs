@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SkeletoBattleState : EnemyState
+public class SkeletonBattleState : EnemyState
 {
     private Transform player;
     private Enemy_Skeleton enemy;
     private int moveDir;
-    public SkeletoBattleState(Enemy _enemyBase, EnemyStateMachine _stateMachine, string _animName, Enemy_Skeleton _enemy) : base(_enemyBase, _stateMachine, _animName)
+    public SkeletonBattleState(Enemy _enemyBase, EnemyStateMachine _stateMachine, string _animName, Enemy_Skeleton _enemy) : base(_enemyBase, _stateMachine, _animName)
     {
         this.enemy = _enemy;
     }

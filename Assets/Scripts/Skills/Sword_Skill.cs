@@ -1,9 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
+//短剑类型
+public enum SwordType
+{
+    Regular,        //常规的
+    Bounce,         //可在Enemy之间反复弹跳的
+    Pierce,         //可穿刺的
+    Spin           //高速旋转    
+}
 
 public class Sword_Skill : Skill
 {
+    public SwordType swordType = SwordType.Regular;             //默认为常规的类型
+
+    [Header("Bounce info")]
+    [SerializeField] private int bounceAmount;
+    [SerializeField] private float bounceGravity;
+
+    [Header("Pierce info")]
+    [SerializeField] private int pierceAmount;
+    [SerializeField] private float pierceGravity;
+
+    [Header("Spin info")]
+    [SerializeField] private float hitCooldown = .35f;          //冷却时间
+    [SerializeField] private float maxTravelDistance = 7;       //投掷旋转剑的最大距离
+    [SerializeField] private float spinDuration = 2;            //持续时间
+    [SerializeField] private float spinGravity;
+
     [Header("Sword info")]
     [SerializeField] private GameObject swordPrefab;            //短剑预制体
     [SerializeField] private Vector2 launchForce;               //发射方向
@@ -33,9 +56,11 @@ public class Sword_Skill : Skill
     {
         base.Update();
 
+        SetupGravity();
+
         //当松开鼠标右键时就确定了最终发射方向
         //通过计算发射方向函数得到方向，而normalized表示归一化，限制在0到1之间，这样是为了让其仅表示方向
-        if(Input.GetKeyUp(KeyCode.Mouse1))
+        if (Input.GetKeyUp(KeyCode.Mouse1))
             finalDir = new Vector2(AimDirection().normalized.x * launchForce.x, AimDirection().normalized.y * launchForce.y);
 
         //按住鼠标右键时查看点的位置
@@ -48,12 +73,33 @@ public class Sword_Skill : Skill
         }
     }
 
+    private void SetupGravity()
+    {
+        if (swordType == SwordType.Bounce)
+            swordGravity = bounceGravity;
+        else if(swordType == SwordType.Pierce)
+            swordGravity = pierceGravity;
+        else if(swordType == SwordType.Spin)
+            swordGravity = spinGravity;
+    }
+
     public void CteateSword()
     {
         //实例Sword对象，在玩家的位置上，并且保持玩家的旋转
         GameObject newSword = Instantiate(swordPrefab, player.transform.position, player.transform.rotation);
+        Sword_Skill_Controller newSwordScirpt = newSword.GetComponent<Sword_Skill_Controller>();
+
+        if (swordType == SwordType.Bounce)
+            newSwordScirpt.SetupBounce(true, bounceAmount);
+        else if (swordType == SwordType.Pierce)
+            newSwordScirpt.SetupPierce(pierceAmount);
+        else if (swordType == SwordType.Spin)
+            newSwordScirpt.SetupSpin(true, maxTravelDistance, spinDuration, hitCooldown);
+        
+
         //调用挂载在实例下的脚本Sword_Skill_Controller
-        newSword.GetComponent<Sword_Skill_Controller>().SetupSword(finalDir, swordGravity, player);
+        //newSword.GetComponent<Sword_Skill_Controller>().SetupSword(finalDir, swordGravity, player);
+        newSwordScirpt.SetupSword(finalDir, swordGravity, player);
 
         //设置短剑对象
         player.AssignNewSword(newSword);
@@ -62,6 +108,7 @@ public class Sword_Skill : Skill
         DotsActive(false);
     }
 
+    #region Aim region
     //计算发射方向的函数，用于投掷剑和设置辅助点
     public Vector2 AimDirection()
     {
@@ -79,7 +126,7 @@ public class Sword_Skill : Skill
     //控制可见性的函数
     public void DotsActive(bool _isActive)
     {
-        for(int i = 0; i < dots.Length; i++)
+        for (int i = 0; i < dots.Length; i++)
         {
             dots[i].SetActive(_isActive);
         }
@@ -91,7 +138,7 @@ public class Sword_Skill : Skill
         //确定数量
         dots = new GameObject[numberOfDots];
         //通过for循环生成
-        for(int i = 0; i < numberOfDots; i++)
+        for (int i = 0; i < numberOfDots; i++)
         {
             //实例化
             dots[i] = Instantiate(dotPrefab, player.transform.position, Quaternion.identity, dotsParent);
@@ -111,4 +158,5 @@ public class Sword_Skill : Skill
             AimDirection().normalized.y * launchForce.y) * t + .5f * (Physics2D.gravity * swordGravity) * (t * t);
         return position;
     }
+    #endregion
 }
